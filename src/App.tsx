@@ -6,7 +6,11 @@ import todosFromServer from './api/todos';
 import { TodoList } from './components/TodoList';
 import { TodoForm } from './components/TodoForm';
 import { Todos } from './types/Todos';
-import { getUserId } from './services/user';
+import { User } from './types/User';
+
+function getUserId(userId: number): User | null {
+  return usersFromServer.find(user => userId === user.id) || null;
+}
 
 const initialTodo: Todos[] = todosFromServer.map(todo => ({
   ...todo,
@@ -22,10 +26,19 @@ function getNewTodoId(todos: Todos[]) {
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todos[]>(initialTodo);
 
-  const addTodo = (todo: Todos) => {
+  // const addTodo = (todo: Todos) => {
+  //   const newTodo = {
+  //     ...todo,
+  //     id: getNewTodoId(todos),
+  //   };
+
+  const addTodo = (title: string, userId: number) => {
     const newTodo = {
-      ...todo,
       id: getNewTodoId(todos),
+      title,
+      userId,
+      completed: false,
+      user: getUserId(userId),
     };
 
     setTodos(prev => [...prev, newTodo]);
@@ -34,11 +47,7 @@ export const App: React.FC = () => {
   return (
     <div className="App">
       <h1>Add todo form</h1>
-      <TodoForm
-        onSubmit={addTodo}
-        users={usersFromServer}
-        todos={todosFromServer}
-      />
+      <TodoForm onSubmit={addTodo} users={usersFromServer} todos={todos} />
       <TodoList todos={todos} users={usersFromServer} />
     </div>
   );

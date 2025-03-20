@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { Todos } from '../../types/Todos';
 import { User } from '../../types/User';
 import React from 'react';
-import { getUserId } from '../../services/user';
 
 type Props = {
-  onSubmit: (todos: Todos) => void;
+  onSubmit: (title: string, userId: number) => void;
   users: User[];
   todos: Todos[];
 };
@@ -41,13 +40,7 @@ export const TodoForm: React.FC<Props> = ({ onSubmit, users }) => {
       return;
     }
 
-    onSubmit({
-      id: 0,
-      title,
-      userId,
-      completed: false,
-      user: getUserId(userId),
-    });
+    onSubmit(title, userId);
 
     setTitle('');
     setUserId(0);
